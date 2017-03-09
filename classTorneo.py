@@ -20,7 +20,7 @@ class Tournament:
 
 	def addContestant(self,pName):
 		if len(self.listContenders)<self.amountContenders:
-			self.listContenders.append([pName,0,0,0,0,0,0]) #Name,Matches played,Matches won,Matches Tied,Matches lost,goals,points
+			self.listContenders.append([pName,0,0,0,0,0,0,0,0]) #Positional Table: Name,Matches played,Matches won,Matches Tied,Matches lost, scored goals, received goals, goal fi,points
 			return "Jugador "+pName+" ingresado."
 		else:
 			return "Error: El limite de jugadores ha sido alcanzado."
@@ -84,19 +84,21 @@ class Tournament:
 						self.calendar[j].append(matches[i])
 		return self.calendar
 
-	def adjustTable(self,pName,pResult,pGoals): #pResult=1 won/ 0 lost/ 2 tied
+	def adjustTable(self,pName,pResult,pScoredGoals,pReceivedGoals): #pResult= 1 won/ 0 lost/ 2 tied 
 		x=self.getContender(pName)
 		x[1]+=1									#Adds the played match
-		x[5]+=pGoals
+		x[5]+=pScoredGoals
+		x[6]+=pReceivedGoals
+		x[7]+=pScoredGoals-pReceivedGoals		#Adds the goal difference
 		if pResult==0:
-			x[4]+=1
+			x[4]+=1								#Adds 1 if the match was lost 
 		else:
 			if pResult==1:
-				x[2]+=1
-				x[6]+=3
+				x[2]+=1							#Adds 1 if the match was won
+				x[8]+=3							#Adds the points
 			else:
-				x[3]+=1
-				x[6]+=1
+				x[3]+=1							#Adds 1 if the match was tied
+				x[8]+=1							#Adds the points
 
 	def determineResult(self,pLocal,pVisitor):
 		if pLocal>pVisitor:
@@ -113,8 +115,8 @@ class Tournament:
 		x[2]=pVGoals
 		print(x[1],x[2])
 		result=self.determineResult(pLGoals,pVGoals)
-		self.adjustTable(pLocal,result[0],pLGoals-pVGoals)
-		self.adjustTable(pVisitor,result[1],pVGoals-pLGoals)
+		self.adjustTable(pLocal,result[0],pLGoals,pVGoals)
+		self.adjustTable(pVisitor,result[1],pVGoals,pLGoals)
 		return "Marcador actualizado.\n"
 	
 	def burbuja(self,lista):
@@ -130,10 +132,10 @@ class Tournament:
 		listScores=[]
 		newListScores=[]
 		for i in range(len(self.listContenders)):
-			listScores.append((self.listContenders[i][6],self.listContenders[i][5],i))
-			newListScores.append((self.listContenders[i][6],self.listContenders[i][5],i))
+			listScores.append((self.listContenders[i][8],self.listContenders[i][7],self.listContenders[i][6],self.listContenders[i][5],i))
+			newListScores.append((self.listContenders[i][8],self.listContenders[i][7],self.listContenders[i][6],self.listContenders[i][5],i))
 		self.burbuja(listScores)
 		listScores.reverse()
 		for j in range(len(listScores)):
-			listScores[j]=self.listContenders[listScores[j][2]]
+			listScores[j]=self.listContenders[listScores[j][4]]
 		return listScores
