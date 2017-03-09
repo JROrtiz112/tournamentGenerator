@@ -61,7 +61,7 @@ def adminTournament(pTournament):
 					else:
 						if option==listOptions[4]:
 							x=pTournament.generatePositionalTable()
-							positionalTable="\nNombre"+"\t"+"PJ"+"\t"+"PG"+"\t"+"PE"+"\t"+"PP"+"\t"+"GD"+"\t"+"PTS\n"
+							positionalTable="\nNombre"+"\t"+"PJ"+"\t"+"PG"+"\t"+"PE"+"\t"+"PP"+"\t"+"GA"+"\t"+"GR"+"\t"+"GD"+"\t"+"PTS\n"
 							for i in range(len(x)):
 								for j in range(len(x[i])):
 									positionalTable+=str(x[i][j])+"\t"
