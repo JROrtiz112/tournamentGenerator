@@ -15,6 +15,54 @@ def pickTournament(pTournamentName):
 	for i in range(len(listTournaments)):
 		if listTournaments[i].getTournamentName()==pTournamentName:
 			return listTournaments[i]
+"""
+Update 03/10/2017
+Functions added to the system, to be used in the menu.
+isPlayerListed
+showCalendar
+"""
+def isPlayerListed(pTournament):
+	while True:
+		name=input("Ingrese el nombre: ")
+		if name=='':
+			print("\nERROR: Debe elegir un nombre.\n")
+		else:
+			x=pTournament.getListContenders()
+			flag=False									#if it's already in the system gets 1
+			for i in range(len(x)):
+				if x[i][0]==name:
+					flag=1
+					break
+			if flag:
+				print("ERROR: El nombre ha sido elegido, escoja uno nuevo.")
+			else:
+				print("\n"+pTournament.addContestant(name)+"\n")
+				break
+
+def showCalendar(pTournament):
+	print("\nEncuentros:\n")
+	x=pTournament.getCalendar()
+	calendar=""
+	for i in range(len(x)):
+		for j in range(len(x[i])):
+			for k in range(len(x[i][j])):
+				if x[i][j][k]!="NULL":
+					calendar+=str(x[i][j][k])+"\t"
+				else:
+					calendar+="0\t"
+			calendar+="\n"
+		calendar+="\n"
+	print(calendar)
+
+def addFinalScore(pTournament):
+	print("\nIngrese los siguientes datos:\n")
+	w=input("Local: ")
+	x=int(input("Goles: "))
+	print("\n")
+	y=input("Visitante: ")
+	z=int(input("Goles: "))
+	print("\n")
+	print(pTournament.setMatch(w,x,y,z)+"\n")
 
 def adminTournament(pTournament):
 	listOptions=["1","2","3","4","5","6","7"]
@@ -22,8 +70,7 @@ def adminTournament(pTournament):
 	option=input("Digite el número de la opción que desea: ")
 	if option in listOptions:
 		if option==listOptions[0]:
-			name=input("Ingrese el nombre: ")
-			print("\n"+pTournament.addContestant(name)+"\n")
+			isPlayerListed(pTournament)
 			return adminTournament(pTournament)
 		else:
 			if option==listOptions[1]:
@@ -33,30 +80,11 @@ def adminTournament(pTournament):
 				return adminTournament(pTournament)
 			else:
 				if option==listOptions[2]:
-					print("\nEncuentros:\n")
-					x=pTournament.getCalendar()
-					calendar=""
-					for i in range(len(x)):
-						for j in range(len(x[i])):
-							for k in range(len(x[i][j])):
-								if x[i][j][k]!="NULL":
-									calendar+=str(x[i][j][k])+"\t"
-								else:
-									calendar+="0\t"
-							calendar+="\n"
-						calendar+="\n"
-					print(calendar)
+					showCalendar(pTournament)
 					return adminTournament(pTournament)
 				else:
 					if option==listOptions[3]:
-						print("\nIngrese los siguientes datos:\n")
-						w=input("Local: ")
-						x=int(input("Goles: "))
-						print("\n")
-						y=input("Visitante: ")
-						z=int(input("Goles: "))
-						print("\n")
-						print(pTournament.setMatch(w,x,y,z)+"\n")
+						addFinalScore()
 						return adminTournament(pTournament)
 					else:
 						if option==listOptions[4]:
@@ -152,5 +180,4 @@ def mainMenu():
 	else:
 		print("Error: las opciones válidas corresponden a los números del 1 al 4.\n")
 		return mainMenu()
-
 mainMenu()
