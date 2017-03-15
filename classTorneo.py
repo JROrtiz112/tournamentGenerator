@@ -1,4 +1,3 @@
-
 """
 Proyecto: Organizador de torneos.
 Programador: José Roberto Ortiz Salazar
