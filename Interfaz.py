@@ -20,24 +20,18 @@ Update 03/10/2017
 Functions added to the system, to be used in the menu.
 isPlayerListed
 showCalendar
+addFinalScore
 """
-def isPlayerListed(pTournament):
-	while True:
-		name=input("Ingrese el nombre: ")
-		if name=='':
-			print("\nERROR: Debe elegir un nombre.\n")
-		else:
-			x=pTournament.getListContenders()
-			flag=False									#if it's already in the system gets 1
-			for i in range(len(x)):
-				if x[i][0]==name:
-					flag=1
-					break
-			if flag:
-				print("ERROR: El nombre ha sido elegido, escoja uno nuevo.")
-			else:
-				print("\n"+pTournament.addContestant(name)+"\n")
-				break
+
+#To improve: make isPlayerListed an atomic function
+def isPlayerListed(pName,pTournament):
+	x=pTournament.getListContenders()
+	flag=False									#if it's already in the system gets 1
+	for i in range(len(x)):
+		if x[i][0]==pName:
+			flag=True
+			break
+	return flag
 
 def showCalendar(pTournament):
 	print("\nEncuentros:\n")
@@ -54,15 +48,47 @@ def showCalendar(pTournament):
 		calendar+="\n"
 	print(calendar)
 
+"""
+Bug: Gets 1 more cycle if the user enters the second name or number wrong and then put the rigth inputs
+"""
 def addFinalScore(pTournament):
 	print("\nIngrese los siguientes datos:\n")
-	w=input("Local: ")
-	x=int(input("Goles: "))
+	while True:
+		w=input("Local: ")
+		if not isPlayerListed(w,pTournament):
+			print("\nERROR: El jugador ingresado no se encuentra en el sistema\n")
+		else:
+			break
+	while True:
+		x=int(input("Goles: "))
+		if not isinstance(x,int) or x<0:
+			print("\nERROR: El número ingresado es incorrecto.\n")
+		else:
+			break
 	print("\n")
-	y=input("Visitante: ")
-	z=int(input("Goles: "))
+	while True:
+		y=input("Visitante: ")
+		if not isPlayerListed(y,pTournament):
+			print("\nERROR: El jugador ingresado no se encuentra en el sistema\n")
+		else:
+			break
+	while True:
+		z=int(input("Goles: "))
+		if not isinstance(z,int) or z<0:
+			print("\nERROR: El número ingresado es incorrecto.\n")
+		else:
+			break
 	print("\n")
 	print(pTournament.setMatch(w,x,y,z)+"\n")
+
+def positionalTable(pTournament):
+	x=pTournament.generatePositionalTable()
+	positionalTable="\nNombre"+"\t"+"PJ"+"\t"+"PG"+"\t"+"PE"+"\t"+"PP"+"\t"+"GA"+"\t"+"GR"+"\t"+"GD"+"\t"+"PTS\n"
+	for i in range(len(x)):
+		for j in range(len(x[i])):
+			positionalTable+=str(x[i][j])+"\t"
+		positionalTable+="\n"
+	print(positionalTable)
 
 def adminTournament(pTournament):
 	listOptions=["1","2","3","4","5","6","7"]
@@ -70,7 +96,16 @@ def adminTournament(pTournament):
 	option=input("Digite el número de la opción que desea: ")
 	if option in listOptions:
 		if option==listOptions[0]:
-			isPlayerListed(pTournament)
+			while True:
+				name=input("Ingrese el nombre: ")
+				if name=='':
+					print("\nERROR: Debe elegir un nombre.\n")
+				else:
+					if isPlayerListed(name,pTournament):
+						print("ERROR: El nombre ha sido elegido, escoja uno nuevo.")
+					else:
+						print("\n"+pTournament.addContestant(name)+"\n")	
+						break
 			return adminTournament(pTournament)
 		else:
 			if option==listOptions[1]:
@@ -84,17 +119,11 @@ def adminTournament(pTournament):
 					return adminTournament(pTournament)
 				else:
 					if option==listOptions[3]:
-						addFinalScore()
+						addFinalScore(pTournament)
 						return adminTournament(pTournament)
 					else:
 						if option==listOptions[4]:
-							x=pTournament.generatePositionalTable()
-							positionalTable="\nNombre"+"\t"+"PJ"+"\t"+"PG"+"\t"+"PE"+"\t"+"PP"+"\t"+"GA"+"\t"+"GR"+"\t"+"GD"+"\t"+"PTS\n"
-							for i in range(len(x)):
-								for j in range(len(x[i])):
-									positionalTable+=str(x[i][j])+"\t"
-								positionalTable+="\n"
-							print(positionalTable)
+							positionalTable(pTournament)
 							return adminTournament(pTournament)
 						else:
 							if option==listOptions[5]:

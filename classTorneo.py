@@ -113,7 +113,7 @@ class Tournament:
 		x=self.getMatch(pLocal,pVisitor)
 		x[1]=pLGoals
 		x[2]=pVGoals
-		print(x[1],x[2])
+		#print(x[1],x[2])
 		result=self.determineResult(pLGoals,pVGoals)
 		self.adjustTable(pLocal,result[0],pLGoals,pVGoals)
 		self.adjustTable(pVisitor,result[1],pVGoals,pLGoals)
